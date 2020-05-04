@@ -1,4 +1,28 @@
-(defun makeEmptyObject ())
+; [15]> (defstruct object methods vals prototype)
+; OBJECT
+; [16]> (setf obj (make-object))
+; #S(OBJECT :METHODS NIL :VALS NIL :PROTOTYPE NIL)
+; [17]> (object-methods obj)
+; NIL
+; [18]> (setf (object-methods obj) "f")
+; "f"
+; [19]> (object-methods obj)
+; "f"
+; [20]> 
+
+(defun makeEmptyObject ()
+  ; resolver hash resolves instance method name and instance val name
+  (defstruct object methods vals prototype delegateObject)
+  ; (make-object 
+  ;   :methods (make-hash-table :test #'equal)
+  ;   :vals (make-hash-table :test #'equal)
+  ;   :prototype nil
+  (make-object)
+)
+
+(setf obj 
+  (object-methods obj)
+(makeEmptyObject)
 
 (defun makeObject (prototype))
 
@@ -19,7 +43,7 @@
 ; inherit as prototype base object system
 (defun setPrototype (object prototype))
 
-(defun getRootPrototypeObject)
+(defun getRootPrototypeObject (object))
 
 ; func is lambda
 (defun setMethod (object func))
