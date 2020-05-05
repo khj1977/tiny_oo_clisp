@@ -10,24 +10,37 @@
 ; "f"
 ; [20]> 
 
-(defun makeEmptyObject ()
-  ; resolver hash resolves instance method name and instance val name
-  (defstruct object methods vals prototype delegateObject)
-  ; (make-object 
-  ;   :methods (make-hash-table :test #'equal)
-  ;   :vals (make-hash-table :test #'equal)
-  ;   :prototype nil
-  (make-object)
+; vals is instance variables.
+(defstruct object methods vals prototype delegateObject)
+
+(defun makeEmptyObjectWithoutDelegate ()
+  (make-object 
+    :methods (make-hash-table :test #'equal)
+    :vals (make-hash-table :test #'equal)
+    :prototype nil
+    :delegateObject nil
+  )
 )
 
-(setf obj 
-  (object-methods obj)
-(makeEmptyObject)
+(defun makeEmptyObject ()
+  ; resolver hash resolves instance method name and instance val name
+  (setf obj (makeEmptyObjectWithoutDelegate))
+  obj
+)
 
-(defun makeObject (prototype))
+;(setf obj 
+;  (object-methods obj)
+; (makeEmptyObject)
+
+(defun makeObject (prototype)
+  (setf obj (makeEmptyObject))
+  (setf (object-prototype obj) prototype)
+  (setf (object-delegateObject obj) (makeNullDelegate))
+  obj
+)
 
 ; This object system is prototye base. So clone object has slightly different meaning compared with class based object system
-(defun clonObject (object))
+(defun cloneObject (object))
 
 ;; hash
 ; (setf ht (make-hash-table :test #'equal))
@@ -35,22 +48,56 @@
 ; (setf (gethash "orange" ht) 200)
 ; (format t "appple ~d " (gethash "apple" ht))
 ; (format t "orange ~d " (gethash "orange" ht))
+; call lambda
+; (funcall foo 1)
 
-(defun addMethod (object methodAsHash))
+(defun makeNullDelegate ()
+  (setf obj (makeEmptyObjectWithoutDelegate))
+  ; debug
+  ; use exception if exists or use appropriate error handling
+  (addMethod obj :call (lambda () "error"))
+  ; end of debug
 
-(defun addInstanceVals (object InstanceValsAsHash))
+  obj
+)
+
+(defun addMethod (object methodNameAsSymbol func)
+  ; (object-methods object) access to struct of object
+  (setf (gethash methodNameAsSymbol (object-methods object)) func)
+
+  object
+)
+
+(defun addInstanceVal (object valNameAsSymbol val)
+  (setf (gethash valNameAsSymbol (object-vals object)) val)
+
+  object
+)
+
+(defun getInstanceVal (object valNameAsSymbol)
+  (gethash valNameAsSymbol (object-vals object))
+)
 
 ; inherit as prototype base object system
-(defun setPrototype (object prototype))
+(defun setPrototype (object prototype)
+  (setf (object-prototype object) prototype)
+
+  object
+)
 
 (defun getRootPrototypeObject (object))
 
-; func is lambda
-(defun setMethod (object func))
+(defun callMethod (object methodNameAsSymbol)
+  ; debug add prototype and delegate call
+  ; (setf (gethash methodNameAsSymbol (object-methods object)) func)
+  (setf method (gethash methodNameAsSymbol (object-methods object)))
+  (funcall method object)
+  ; end of debug
+)
 
-(defun callMethod (object methodNameAsSymbol))
-
-(defun setDelegate (object delegateObject))
+(defun setDelegate (object delegateObject)
+  (setf (object-delegateObject object) delegate)
+)
 
 ; protected
 (defun searchMethodInThisObject (object methodNameAsSymbol))
