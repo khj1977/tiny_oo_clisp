@@ -64,7 +64,10 @@
   (setf delegate (gethash :delegateContainer (object-delegateObject object)))
 
   (setf result nil)
-  (if (eq method nil)
+  (if (not (eq method nil))
+    (progn
+      (setf result (funcall method object))
+    )
     (progn
       (if (not (eq delegate nil))
         (progn
@@ -75,9 +78,6 @@
       (if (not (eq prototype nil))
         (setf result (callMethod prototype methodNameAsSymbol))
       )
-    )
-    (progn
-      (setf result (funcall method object))
     )
   )
   
