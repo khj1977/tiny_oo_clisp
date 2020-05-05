@@ -51,6 +51,33 @@
 ; call lambda
 ; (funcall foo 1)
 
+(defun addMethod (object methodNameAsSymbol func)
+  ; (object-methods object) access to struct of object
+  (setf (gethash methodNameAsSymbol (object-methods object)) func)
+
+  object
+)
+
+
+(defun callMethod (object methodNameAsSymbol)
+  ; debug add prototype and delegate call
+  ; (setf (gethash methodNameAsSymbol (object-methods object)) func)
+  (setf method (gethash methodNameAsSymbol (object-methods object)))
+  (funcall method object)
+  ; end of debug
+)
+
+(defun addInstanceVal (object valNameAsSymbol val)
+  (setf (gethash valNameAsSymbol (object-vals object)) val)
+
+  object
+)
+
+
+(defun getInstanceVal (object valNameAsSymbol)
+  (gethash valNameAsSymbol (object-vals object))
+)
+
 (defun makeNullDelegate ()
   (setf obj (makeEmptyObjectWithoutDelegate))
   ; debug
@@ -61,23 +88,6 @@
   obj
 )
 
-(defun addMethod (object methodNameAsSymbol func)
-  ; (object-methods object) access to struct of object
-  (setf (gethash methodNameAsSymbol (object-methods object)) func)
-
-  object
-)
-
-(defun addInstanceVal (object valNameAsSymbol val)
-  (setf (gethash valNameAsSymbol (object-vals object)) val)
-
-  object
-)
-
-(defun getInstanceVal (object valNameAsSymbol)
-  (gethash valNameAsSymbol (object-vals object))
-)
-
 ; inherit as prototype base object system
 (defun setPrototype (object prototype)
   (setf (object-prototype object) prototype)
@@ -86,14 +96,6 @@
 )
 
 (defun getRootPrototypeObject (object))
-
-(defun callMethod (object methodNameAsSymbol)
-  ; debug add prototype and delegate call
-  ; (setf (gethash methodNameAsSymbol (object-methods object)) func)
-  (setf method (gethash methodNameAsSymbol (object-methods object)))
-  (funcall method object)
-  ; end of debug
-)
 
 (defun setDelegate (object delegateObject)
   (setf (object-delegateObject object) delegate)
@@ -107,3 +109,9 @@
 
 ; protected
 (defun hasMethodRecursively (object methodNameAsSymbol))
+
+; protected
+(defun getAllMethodNamesInThisObject (object))
+
+; protected
+(defun getAllInstanceValNamesInThisObject (object))
