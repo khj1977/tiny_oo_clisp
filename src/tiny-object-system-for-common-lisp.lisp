@@ -11,14 +11,23 @@
 ; [20]> 
 
 ; vals is instance variables.
-(defstruct object methods vals prototype delegateObject)
+(defstruct object methods vals prototypeObject delegateObject)
 
 (defun makeEmptyObjectWithoutDelegate ()
   (make-object 
-    :methods (make-hash-table :test #'equal)
-    :vals (make-hash-table :test #'equal)
-    :prototype nil
-    :delegateObject nil
+    ; :methods (make-hash-table :test #'equal)
+    ; :vals (make-hash-table :test #'equal)   
+    ; debug
+    ; quick hack to prevent immutable element of struct
+    ; is it really immutable? not seems so
+    ; :prototypeObject (make-hash-table :test #'equal)
+    ; :delegateObject (make-hash-table :test #'equal)
+    ; end of debug
+
+    :methods (make-hash-table)
+    :vals (make-hash-table)   
+    :prototypeObject (make-hash-table)
+    :delegateObject (make-hash-table)
   )
 )
 
@@ -33,9 +42,10 @@
 ; (makeEmptyObject)
 
 (defun makeObject (prototype)
+  ; (setf (gethash methodNameAsSymbol (object-methods object)) func)
   (setf obj (makeEmptyObject))
-  (setf (object-prototype obj) prototype)
-  (setf (object-delegateObject obj) (makeNullDelegate))
+  (setf (gethash :prototypeContainer (object-prototypeObject obj)) prototype)
+  (setf (gethash :delegateContainer (object-delegateObject obj)) (makeNullDelegate))
   obj
 )
 
@@ -58,12 +68,29 @@
   object
 )
 
-
 (defun callMethod (object methodNameAsSymbol)
   ; debug add prototype and delegate call
   ; (setf (gethash methodNameAsSymbol (object-methods object)) func)
+  ; (gethash valNameAsSymbol (object-vals object))
+
+  ; debug
+  ; add delegate
+  ; end of debug
   (setf method (gethash methodNameAsSymbol (object-methods object)))
-  (funcall method object)
+  (setf prototype (gethash :prototypeContainer (object-prototypeObject object)))
+  (setf result nil)
+  (if (eq method nil)
+    (progn
+      (if (not (eq prototype nil))
+        (setf result (callMethod prototype methodNameAsSymbol))
+      )
+    )
+    (progn
+      (setf result (funcall method object))
+    )
+  )
+  
+  result
   ; end of debug
 )
 
@@ -89,8 +116,9 @@
 )
 
 ; inherit as prototype base object system
-(defun setPrototype (object prototype)
-  (setf (object-prototype object) prototype)
+(defun setPrototype (object prt)
+  ; (setf prototype (gethash :prototype (object-prototype object)))
+  (setf (gethash :prototype (object-prototype object)) prt)
 
   object
 )
