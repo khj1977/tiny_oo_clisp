@@ -79,12 +79,14 @@
       (if (not (eq delegate nil))
         (progn
           (setf result (callMethod delegate methodNameAsSymbol))
-          (return-from callMethod nil)
+          ; (return-from callMethod nil)
+        )
+        (progn
+          (if (not (eq prototype nil))
+          (setf result (callMethod prototype methodNameAsSymbol))) 
         )
       )
-      (if (not (eq prototype nil))
-        (setf result (callMethod prototype methodNameAsSymbol))
-      )
+      
     )
   )
   
