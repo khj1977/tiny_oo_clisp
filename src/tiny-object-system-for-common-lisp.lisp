@@ -32,6 +32,13 @@
   obj
 )
 
+(defun makeObjectWithDelegate (prototype delegate)
+  (setf obj (makeEmptyObject))
+  (setf (gethash :prototypeContainer (object-prototypeObject obj)) prototype)
+  (setf (gethash :delegateContainer (object-delegateObject obj)) delegate)
+  obj
+)
+
 ; This object system is prototye base. So clone object has slightly different meaning compared with class based object system
 (defun cloneObject (object))
 
