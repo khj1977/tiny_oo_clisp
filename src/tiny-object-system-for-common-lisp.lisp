@@ -123,17 +123,13 @@
   object
 )
 
-(defun setdelegate (self delegate)
+(defun setDelegate (self delegate)
   (setf (gethash :delegateContainer (object-delegateObject self)) delegate)
 
   self
 )
 
 (defun getRootPrototypeObject (object))
-
-(defun setDelegate (object delegateObject)
-  (setf (object-delegateObject object) delegate)
-)
 
 ; protected
 (defun searchMethodInThisObject (object methodNameAsSymbol))

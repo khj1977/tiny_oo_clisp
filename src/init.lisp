@@ -12,3 +12,5 @@
   )
   (load path)
 )
+
+(myLoad "main.lisp")
