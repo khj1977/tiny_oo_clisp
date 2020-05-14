@@ -7,6 +7,6 @@ This is experimental code and just toy code.
 Have fun with hacking clisp!
 
 # How to test?
-In src dir, tyep the following in terminal:
+In src dir, type the following in terminal:
 
 clisp init.lisp 
