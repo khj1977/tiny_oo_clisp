@@ -2,7 +2,10 @@
 
 (setf obj (makeEmptyObject))
 (addMethod obj :getOrange (lambda (x) "orange"))
+(addMethod obj :getApplePie (lambda (x) "ApplePie"))
 (format t "Hello ~s~%" (callMethod obj :getOrange))
+(format t "Hello2 ~s~%" (callMethod obj :getApplePie))
+(format t "Hello Validation: ~s~%" (callMethod obj :getOrange))
 
 ; test of delegate
 (setf delegate (makeEmptyObject))
